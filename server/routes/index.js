@@ -1,17 +1,31 @@
 import express from "express";
-import { promises as fs } from "fs";
+import { default as fs, promises as fsPromises } from "fs";
 const router = express.Router();
-let projects = fs.readfilesync("./data.json");
-
-const createProject = async ({ projectName, classes }) => {
+const loadJSON = () => {
+  try {
+    let f = fs.readFileSync("data.json");
+    return JSON.parse(f);
+  } catch (e) {
+    console.error(e);
+    console.log("Loading data.json failed");
+    return [];
+  }
+};
+let projects = loadJSON()
+const createProject = async (req, res) => {
+  const { projectName, classes } = req.body;
+  console.log("Creating a project", { oldprojects: projects });
   projects = {
     ...projects,
     [projectName]: {
-      classes,
-    },
+      classes
+    }
   };
-  await fs.writeFile('data.json', JSON.stringify(projects))
-  res.status(200).send()
+  console.log({ projects });
+  await fsPromises
+    .writeFile("data.json", JSON.stringify(projects))
+    .catch(error => console.log(error));
+  res.status(200).send();
 };
 const getProjectsAvailable = (req, res) => {
   res.send({ projects });
@@ -22,7 +36,7 @@ const requestImage = (req, res) => {
   res.send({
     img: imgUrl,
     classes,
-    imagesRemaining,
+    imagesRemaining
   });
 };
 const classifyImage = (req, res) => {
@@ -31,7 +45,7 @@ const classifyImage = (req, res) => {
   res.send({
     img: imgUrl,
     classes,
-    imagesRemaining,
+    imagesRemaining
   });
 };
 

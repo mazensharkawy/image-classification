@@ -25,7 +25,7 @@ class App extends Component {
   setProjects = projects => this.setState({ projects });
   selectProject = selectedProject => {
     const { projects } = this.state;
-    this.setState({ selectedProject });
+    this.setState({ selectedProject: _.trim(selectedProject) });
     if (_.includes(projects, selectedProject))
       this.setState({ page: CLASSIFYING_PAGE });
     else this.next();
