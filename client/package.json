@@ -36,5 +36,6 @@
   "prettier": {
     "trailingComma": "none",
     "arrowParens": "avoid"
-  }
+  },
+  "proxy": "localhost:3001"
 }
