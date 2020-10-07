@@ -1,0 +1,53 @@
+import _ from "lodash";
+import { Component, default as React } from "react";
+import styled from "styled-components";
+import Input from "../components/DefaultInput";
+
+const ProjectsBox = styled.div`
+  border-radius: 5px;
+  width: 30vw;
+`;
+const Project = styled.a`
+  padding: 10px 0;
+  width: 100%;
+`;
+const NewProject = styled.button`
+  padding: 10px 20px;
+`;
+
+class ProjectsContainer extends Component {
+  state = { newProjectName: "", error: null };
+  handleChange = event => this.setState({ newProjectName: event.target.value });
+  createProject = () => {
+    const { projects, selectProject, next } = this.props;
+    const { newProjectName } = this.state;
+    if (!_.include(projects, newProjectName)) {
+      //   Server.createProject(newProjectName)
+      selectProject(newProjectName);
+      next();
+    } else
+      this.setState({ error: "Project Name exists. Please try another name" });
+  };
+  render = () => {
+    const { selectProject, projects } = this.props;
+    const { newProjectName, error } = this.state;
+    return (
+      <div>
+        {!projects && <p>Loading</p>}
+        {projects && projects.error && <p>Error loading Projects</p>}
+        <p>Select a project to continue classifying</p>
+        <ProjectsBox>
+          {_.map(projects, project => (
+            <Project onClick={() => selectProject(project)}>{project}</Project>
+          ))}
+          <p>Or Create A New Project</p>
+          <Input placeholder="New Project Name" value={newProjectName} onChange={this.handleChange} />
+          <NewProject onClick={this.createProject}>Add new Project</NewProject>
+          <Error>{error}</Error>
+        </ProjectsBox>
+      </div>
+    );
+  };
+}
+
+export default ProjectsContainer;
