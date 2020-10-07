@@ -1,8 +1,16 @@
-import axios from "axios";
 import _ from "lodash";
 
 const dev = process.env.NODE_ENV !== "production";
 export default class Server {
+  static createProject({ projectName, classes }) {
+    return this.send({
+      url: `/api/create-project`,
+      data: {
+        projectName,
+        classes
+      }
+    });
+  }
   static classifyImage({ imageClass, project, image }) {
     return this.send({
       url: `/api/classify-image`,
@@ -20,7 +28,7 @@ export default class Server {
   }
   static getProjectsAvailable() {
     return this.get({
-      url: `/api/getProjects`
+      url: `/api/projects`
     });
   }
   static send({ url, data }) {
@@ -33,7 +41,7 @@ export default class Server {
       data
       //   credentials: 'same-origin'
     };
-    return axios(url, payload).then(this.getData);
+    return fetch(url, payload).then(this.getData);
     // .catch(err => console.log(err));
     // .then(this.parseJson);
   }
@@ -44,7 +52,7 @@ export default class Server {
         "Content-Type": "application/json"
       }
     };
-    return axios(url, payload).then(res => this.getData(res));
+    return fetch(url, payload).then(res => this.getData(res));
     // .catch(err => console.log(err));
     // .then(this.parseJson);
   }

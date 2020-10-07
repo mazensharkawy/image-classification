@@ -12,7 +12,7 @@ export default styled.input`
   font-size: 1vw;
   color: #717171;
   border: none;
-  border: ${({ error }) => (error ? "1px solid #ececec" : "1px solid red")};
+  border: ${({ error }) => (error ? "1px solid red":"1px solid #ececec" )};
   background: ${({ error }) => (error ? "#ffcccb" : "white")};
   @media only screen and (max-width: ${MOBILE_BREAK_POINT}) {
     height: 9vw;

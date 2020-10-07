@@ -34,7 +34,13 @@ class App extends Component {
     const { page, projects, selectedProject } = this.state;
     switch (page) {
       case PROJECTS_PAGE:
-        return <ProjectsContainer next={this.next} projects={projects} />;
+        return (
+          <ProjectsContainer
+            selectProject={this.selectProject}
+            next={this.next}
+            projects={projects}
+          />
+        );
       case SET_CLASSES_PAGE:
         return (
           <ClassesContainer

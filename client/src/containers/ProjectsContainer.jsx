@@ -14,6 +14,9 @@ const Project = styled.a`
 const NewProject = styled.button`
   padding: 10px 20px;
 `;
+const Error = styled.p`
+  color: red;
+`;
 
 class ProjectsContainer extends Component {
   state = { newProjectName: "", error: null };
@@ -21,7 +24,9 @@ class ProjectsContainer extends Component {
   createProject = () => {
     const { projects, selectProject, next } = this.props;
     const { newProjectName } = this.state;
-    if (!_.include(projects, newProjectName)) {
+    if (!/^[ A-Za-z0-9_@.#&+-]*$/.test(newProjectName)) {
+      this.setState({ error: "Invalid character(s)" });
+    } else if (!_.includes(projects, newProjectName)) {
       //   Server.createProject(newProjectName)
       selectProject(newProjectName);
       next();
@@ -41,7 +46,11 @@ class ProjectsContainer extends Component {
             <Project onClick={() => selectProject(project)}>{project}</Project>
           ))}
           <p>Or Create A New Project</p>
-          <Input placeholder="New Project Name" value={newProjectName} onChange={this.handleChange} />
+          <Input
+            placeholder="New Project Name"
+            value={newProjectName}
+            onChange={this.handleChange}
+          />
           <NewProject onClick={this.createProject}>Add new Project</NewProject>
           <Error>{error}</Error>
         </ProjectsBox>
