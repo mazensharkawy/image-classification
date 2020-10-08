@@ -32,7 +32,7 @@ export default class Server {
         "Content-Type": "application/json"
       },
       method: "POST",
-      body: data
+      body: JSON.stringify(data)
       //   credentials: 'same-origin'
     };
     return fetch(url, payload).then(this.getData);
