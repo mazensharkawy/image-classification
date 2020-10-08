@@ -8,7 +8,11 @@ const ProjectsBox = styled.div`
   width: 30vw;
 `;
 const Project = styled.a`
+  display: block;
   padding: 10px 0;
+  border-top:1px solid #ececec;
+  border-bottom:1px solid #ececec;
+  text-align: center;
   width: 100%;
 `;
 const NewProject = styled.button`
@@ -29,7 +33,6 @@ class ProjectsContainer extends Component {
     } else if (!_.includes(projects, newProjectName)) {
       //   Server.createProject(newProjectName)
       selectProject(newProjectName);
-      next();
     } else
       this.setState({ error: "Project Name exists. Please try another name" });
   };
@@ -42,18 +45,20 @@ class ProjectsContainer extends Component {
         {projects && projects.error && <p>Error loading Projects</p>}
         <p>Select a project to continue classifying</p>
         <ProjectsBox>
-          {_.map(projects, project => (
-            <Project onClick={() => selectProject(project)}>{project}</Project>
+          {_.map(projects, (project, projectName) => (
+            <Project onClick={() => selectProject(projectName)}>
+              {projectName}
+            </Project>
           ))}
-          <p>Or Create A New Project</p>
-          <Input
-            placeholder="New Project Name"
-            value={newProjectName}
-            onChange={this.handleChange}
-          />
-          <NewProject onClick={this.createProject}>Add new Project</NewProject>
-          <Error>{error}</Error>
         </ProjectsBox>
+        <p>Or Create A New Project</p>
+        <Input
+          placeholder="New Project Name"
+          value={newProjectName}
+          onChange={this.handleChange}
+        />
+        <NewProject onClick={this.createProject}>Add new Project</NewProject>
+        <Error>{error}</Error>
       </div>
     );
   };

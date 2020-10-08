@@ -13,6 +13,7 @@ class App extends Component {
   state = {
     page: 0
   };
+
   componentDidMount() {
     Server.getProjectsAvailable()
       .then(this.setProjects)
@@ -21,17 +22,21 @@ class App extends Component {
         this.setProjects({ error: true });
       });
   }
+
   next = () => this.setState({ page: this.state.page + 1 });
+
   setProjects = projects => this.setState({ projects });
+
   selectProject = selectedProject => {
     const { projects } = this.state;
     this.setState({ selectedProject: _.trim(selectedProject) });
-    if (_.includes(projects, selectedProject))
+    if (_.includes(_.keys(projects), selectedProject)) {
       this.setState({ page: CLASSIFYING_PAGE });
-    else this.next();
+    } else this.next();
   };
+
   renderPage = () => {
-    const { page, projects, selectedProject } = this.state;
+    const { page, selectedProject, projects } = this.state;
     switch (page) {
       case PROJECTS_PAGE:
         return (

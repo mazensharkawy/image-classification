@@ -11,21 +11,22 @@ const loadJSON = () => {
     return [];
   }
 };
-let projects = loadJSON()
+let projects = loadJSON();
 const createProject = async (req, res) => {
   const { projectName, classes } = req.body;
-  console.log("Creating a project", { oldprojects: projects });
   projects = {
     ...projects,
     [projectName]: {
       classes
     }
   };
-  console.log({ projects });
-  await fsPromises
-    .writeFile("data.json", JSON.stringify(projects))
-    .catch(error => console.log(error));
-  res.status(200).send();
+  try {
+    await fsPromises.writeFile("data.json", JSON.stringify(projects));
+    res.send();
+  } catch (err) {
+    console.log({ err });
+    res.status(500).send("Something Bad Happened");
+  }
 };
 const getProjectsAvailable = (req, res) => {
   res.send({ projects });

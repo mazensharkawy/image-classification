@@ -1,4 +1,3 @@
-import _ from "lodash";
 
 const dev = process.env.NODE_ENV !== "production";
 export default class Server {
@@ -22,14 +21,11 @@ export default class Server {
     });
   }
   static requestImageNewImage(project) {
-    return this.get({
-      url: `/api/request-image/${project}`
-    });
+    return this.get(`/api/request-image/${project}`);
   }
   static getProjectsAvailable() {
-    return this.get({
-      url: `/api/projects`
-    });
+    return this.get(`/api/projects`)
+      .then(({ projects }) => projects);
   }
   static send({ url, data }) {
     let payload = {
@@ -57,6 +53,6 @@ export default class Server {
     // .then(this.parseJson);
   }
   static getData(response) {
-    return _.get(response, "data", {});
+    return response.json()
   }
 }
