@@ -45,6 +45,9 @@ class ProjectsContainer extends Component {
         {projects && projects.error && <p>Error loading Projects</p>}
         <p>Select a project to continue classifying</p>
         <ProjectsBox>
+        {_.size(projects) === 0 && <Project>
+              No projects found
+            </Project>}
           {_.map(projects, (project, projectName) => (
             <Project onClick={() => selectProject(projectName)}>
               {projectName}
