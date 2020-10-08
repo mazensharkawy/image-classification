@@ -37,5 +37,5 @@
     "trailingComma": "none",
     "arrowParens": "avoid"
   },
-  "proxy": "localhost:3001"
+  "proxy": "http://localhost:3001"
 }
