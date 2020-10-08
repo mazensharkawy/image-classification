@@ -1,4 +1,3 @@
-
 const dev = process.env.NODE_ENV !== "production";
 export default class Server {
   static createProject({ projectName, classes }) {
@@ -24,8 +23,7 @@ export default class Server {
     return this.get(`/api/request-image/${project}`);
   }
   static getProjectsAvailable() {
-    return this.get(`/api/projects`)
-      .then(({ projects }) => projects);
+    return this.get(`/api/projects`).then(({ projects }) => projects);
   }
   static send({ url, data }) {
     let payload = {
@@ -34,7 +32,7 @@ export default class Server {
         "Content-Type": "application/json"
       },
       method: "POST",
-      data
+      body: data
       //   credentials: 'same-origin'
     };
     return fetch(url, payload).then(this.getData);
@@ -53,6 +51,6 @@ export default class Server {
     // .then(this.parseJson);
   }
   static getData(response) {
-    return response.json()
+    return response.json();
   }
 }
