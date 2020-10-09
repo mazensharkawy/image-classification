@@ -7,7 +7,7 @@ const server = express();
 
 server.use(bodyParser.json());
 server.use("/api", routes);
-
+server.use(express.static('./Images'))
 
 server.listen(port, (err) => {
   if (err) throw err;

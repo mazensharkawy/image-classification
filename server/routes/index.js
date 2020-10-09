@@ -1,6 +1,35 @@
 import express from "express";
 import { default as fs, promises as fsPromises } from "fs";
+import _ from "lodash";
+import mv from "mv";
+import path from "path";
+
 const router = express.Router();
+
+const IMAGES_BASE = "./Images/";
+const ROOT_PATH = path.join(__dirname, "../..");
+let imagesObject = {};
+
+const moveAsync = (image, newPath) => {
+  return new Promise((resolve, reject) => {
+    mv(image, newPath, err => {
+      if (!err) return resolve();
+      console.log(err);
+      reject();
+    });
+  });
+};
+const findAndRemove = ( project, value) => {
+  const arr = imagesObject[project]
+    var index = arr.indexOf(value);
+    if (index > -1) {
+      arr.splice(index, 1);
+    }
+    imagesObject = { 
+      ...imagesObject,
+      [project]: arr
+    }
+}
 const loadJSON = () => {
   try {
     let f = fs.readFileSync("data.json");
@@ -12,6 +41,35 @@ const loadJSON = () => {
   }
 };
 let projects = loadJSON();
+
+const fetchImage = async projectName => {
+  let imagesList = imagesObject[projectName];
+  if (!imagesList) imagesList = await loadProjectImages(projectName);
+  let classes = _.get(projects, `${projectName}.classes`);
+  let formattedProjectName = _.replace(projectName, " ", "\\ ");
+  let img = `/${formattedProjectName}/${imagesList[imagesList.length - 1]}`;
+  return { img, classes, imagesRemaining: imagesList.length };
+};
+const requestImage = async (req, res) => {
+  const projectName = req.params.project;
+  const { img, classes, imagesRemaining } = await fetchImage(projectName);
+  res.send({ img, classes, imagesRemaining });
+};
+
+const loadProjectImages = async projectName => {
+  try {
+    let imagesList = await fsPromises.readdir(`${IMAGES_BASE}${projectName}`);
+    imagesObject = {
+      ...imagesObject,
+      [projectName]: imagesList
+    };
+    return imagesList;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
 const createProject = async (req, res) => {
   const { projectName, classes } = req.body;
   projects = {
@@ -31,18 +89,37 @@ const createProject = async (req, res) => {
 const getProjectsAvailable = (req, res) => {
   res.send({ projects });
 };
-const requestImage = (req, res) => {
-  const project = req.params.project;
-  const { imgUrl, classes, imagesRemaining } = readImage(project);
-  res.send({
-    img: imgUrl,
-    classes,
-    imagesRemaining
-  });
-};
-const classifyImage = (req, res) => {
+
+const classifyImage = async (req, res) => {
   const { imageClass, project, image } = req.body;
-  const { imgUrl, classes, imagesRemaining } = readImage(project);
+  let imgName = image.split("/").slice(-1).pop();
+  let newPath = path.join(
+    ROOT_PATH,
+    `./ClassifiedImages/${project}/${imageClass}/${imgName}`
+  );
+  const oldImgPath = path.join(ROOT_PATH, `./Images/${image}`);
+  try {
+    moveAsync(oldImgPath, newPath).then(
+      async () => await fetchImage(project)
+    );
+    findAndRemove(project, imgName)
+    const { img, classes, imagesRemaining } = await fetchImage(project);
+    res.send({ img, classes, imagesRemaining });
+  } catch (error) {
+    console.log({ error });
+    return res.status(500).send();
+  }
+};
+const discardImage = async (req, res) => {
+  const { project, image } = req.body;
+  try {
+    fs.unlink(image, callback);
+
+    await moveAsync(image, newPath);
+  } catch (error) {
+    res.status(500).send();
+  }
+  const { imgUrl, classes, imagesRemaining } = fetchImage(project);
   res.send({
     img: imgUrl,
     classes,
@@ -50,13 +127,40 @@ const classifyImage = (req, res) => {
   });
 };
 
-const readImage = () => {
-  return { img: "url", classes: [], imagesRemaining: 0 };
-};
+// const move = (oldPath, newPath, callback) => {
+//   fs.rename(oldPath, newPath, function (err) {
+//     if (err) {
+//       if (err.code === "EXDEV") {
+//         copy();
+//       } else {
+//         callback(err);
+//       }
+//       return;
+//     }
+//     callback();
+//   });
 
-router.get("/request-image/:project", requestImage);
+// function copy(oldPath, newPath, callback) {
+//   try {
+//     var readStream = fs.createReadStream(oldPath);
+//     var writeStream = fs.createWriteStream(newPath);
+
+//     readStream.on("error", callback);
+//     writeStream.on("error", callback);
+
+//     readStream.on("close", function () {
+//       fs.unlink(oldPath, callback);
+//     });
+//     readStream.pipe(writeStream);
+//   } catch(error) {
+//     console.log(error)
+//     callback("Error moving file")
+//   }
+// }
 router.get("/projects", getProjectsAvailable);
-router.post("/classify-image", classifyImage);
 router.post("/create-project", createProject);
+router.get("/request-image/:project", requestImage);
+router.post("/classify-image", classifyImage);
+router.post("/discard-image", discardImage);
 
 export default router;
