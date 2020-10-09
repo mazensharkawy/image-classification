@@ -19,7 +19,8 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.20",
+    "mv": "^2.1.1"
   },
   "prettier": {
     "trailingComma": "none",
