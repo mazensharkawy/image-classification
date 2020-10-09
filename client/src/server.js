@@ -9,6 +9,15 @@ export default class Server {
       }
     });
   }
+  static discardImage({ project, image }) {
+    return this.send({
+      url: `/api/discard-image`,
+      data: {
+        project,
+        image
+      }
+    });
+  }
   static classifyImage({ imageClass, project, image }) {
     return this.send({
       url: `/api/classify-image`,
@@ -19,7 +28,7 @@ export default class Server {
       }
     });
   }
-  static requestImageNewImage(project) {
+  static requestNewImage(project) {
     return this.get(`/api/request-image/${project}`);
   }
   static getProjectsAvailable() {
