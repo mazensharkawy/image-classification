@@ -2,7 +2,7 @@
     "apps": [
       {
         "name": "Classification Tool",
-        "script": "./server/app.js",
+        "script": "./compiled/index.js",
         "env": {
           "NODE_ENV": "production",
           "PORT": 6333

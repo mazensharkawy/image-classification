@@ -7,7 +7,7 @@
     "start": "concurrently \"cd client && react-scripts start\" \"nodemon --exec npx babel-node server /\"",
     "server": "nodemon --exec npx babel-node server/",
     "client": "cd client && yarn start",
-    "build": "npx @babel/cli server --out-dir compiled --copy-files && cd client && yarn build",
+    "build": "npx babel server --out-dir compiled --copy-files && cd client && yarn build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -16,10 +16,11 @@
     "@babel/cli": "^7.11.6",
     "@babel/core": "^7.11.6",
     "@babel/node": "^7.10.5",
-    "regenerator-runtime": "^0.13.7"
+    "babel-cli": "^6.26.0"
   },
   "dependencies": {
     "@babel/preset-env": "^7.11.5",
+    "babel-preset-env": "^1.7.0",
     "express": "^4.17.1",
     "lodash": "^4.17.20",
     "mv": "^2.1.1"
