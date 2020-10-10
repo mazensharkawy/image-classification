@@ -7,7 +7,7 @@
     "start": "concurrently \"cd client && react-scripts start\" \"nodemon --exec npx babel-node server /\"",
     "server": "nodemon --exec npx babel-node server/",
     "client": "cd client && yarn start",
-    "build": "npx babel-cli server --out-dir compiled --copy-files && cd client && yarn build",
+    "build": "npx babel server --out-dir compiled --copy-files && cd client && yarn build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
