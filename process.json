@@ -5,7 +5,7 @@
         "script": "./compiled/index.js",
         "env": {
           "NODE_ENV": "production",
-          "PORT": 6333
+          "PORT": 6225
         }
       }
     ]
