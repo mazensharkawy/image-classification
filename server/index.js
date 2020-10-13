@@ -9,16 +9,19 @@ const port = process.env.PORT || 3001;
 const server = express();
 
 server.use(
-  express.static(IMAGES_BASE, { index: false })
+  express.static(path.join(__dirname, "../client/build"), { index: false })
 );
+server.use(express.static(IMAGES_BASE, { index: false }));
+
 server.use(bodyParser.json());
 server.use("/api", routes);
-server.use(express.static("./Images"));
 
 server.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
 server.listen(port, err => {
   if (err) throw err;
-  console.log(`${process.env.NODE_ENV || "Development"} Server listening on ${port}`);
+  console.log(
+    `${process.env.NODE_ENV || "Development"} Server listening on ${port}`
+  );
 });
