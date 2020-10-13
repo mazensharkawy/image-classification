@@ -14,15 +14,23 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var dev = process.env.NODE_ENV !== "production";
+var BUILD_BASE = _path.default.join(__dirname, "../client/build");
+
 var port = process.env.PORT || 3001;
 var server = (0, _express.default)();
+console.log({
+  BUILD_BASE,
+  IMAGES_BASE: _routes.IMAGES_BASE
+});
 server.use(_express.default.static(_routes.IMAGES_BASE, {
   index: false
 }));
+server.use(_express.default.static(BUILD_BASE, {
+  index: false
+}));
+console.log({});
 server.use(_bodyParser.default.json());
 server.use("/api", _routes.default);
-server.use(_express.default.static("./Images"));
 server.get("/*", function (req, res) {
   res.sendFile(_path.default.join(__dirname, "../client/build", "index.html"));
 });

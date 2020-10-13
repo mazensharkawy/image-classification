@@ -3,16 +3,14 @@ import express from "express";
 import path from "path";
 import routes, { IMAGES_BASE } from "./routes";
 
-const dev = process.env.NODE_ENV !== "production";
-
+const BUILD_BASE = path.join(__dirname, "../client/build");
 const port = process.env.PORT || 3001;
 const server = express();
 
-server.use(
-  express.static(path.join(__dirname, "../client/build"), { index: false })
-);
+console.log({ BUILD_BASE, IMAGES_BASE });
 server.use(express.static(IMAGES_BASE, { index: false }));
-
+server.use(express.static(BUILD_BASE, { index: false }));
+console.log({});
 server.use(bodyParser.json());
 server.use("/api", routes);
 
