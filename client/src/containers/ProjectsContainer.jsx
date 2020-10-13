@@ -2,21 +2,47 @@ import _ from "lodash";
 import { Component, default as React } from "react";
 import styled from "styled-components";
 import Input from "../components/DefaultInput";
+import {
+  LARGE_SCREEN_BREAK_POINT,
 
+  PURPLE
+} from "../config";
+
+const Container = styled.div`
+width: 40vw;
+margin: 5vw auto;
+`
 const ProjectsBox = styled.div`
   border-radius: 5px;
   width: 30vw;
 `;
+const CustomInput = styled(Input)`
+width: 30vw;
+`
 const Project = styled.a`
   display: block;
   padding: 10px 0;
-  border-top:1px solid #ececec;
-  border-bottom:1px solid #ececec;
+  border-top: 1px solid #ececec;
+  border-bottom: 1px solid #ececec;
   text-align: center;
   width: 100%;
 `;
-const NewProject = styled.button`
-  padding: 10px 20px;
+const Button = styled.button`
+  color: white;
+  cursor: pointer;
+  background: ${PURPLE};
+  text-align: center;
+  border-radius: 10px;
+  padding: 1.2vw 1.2vw;
+  font-weight: 500;
+  font-size: 1vw;
+  margin: 3px 0;
+  border: none;
+  @media only screen and (min-width: ${LARGE_SCREEN_BREAK_POINT}) {
+    border-radius: 13px;
+    font-size: 18px;
+    padding: 23px;
+  }
 `;
 const Error = styled.p`
   color: red;
@@ -40,14 +66,14 @@ class ProjectsContainer extends Component {
     const { selectProject, projects } = this.props;
     const { newProjectName, error } = this.state;
     return (
-      <div>
-        {!projects && <p>Loading</p>}
+      <Container>
         {projects && projects.error && <p>Error loading Projects</p>}
         <p>Select a project to continue classifying</p>
         <ProjectsBox>
-        {_.size(projects) === 0 && <Project>
-              No projects found
-            </Project>}
+          {projects && _.size(projects) === 0 && (
+            <Project>No projects found</Project>
+          )}
+          {!projects && <Project>Loading</Project>}
           {_.map(projects, (project, projectName) => (
             <Project onClick={() => selectProject(projectName)}>
               {projectName}
@@ -55,14 +81,14 @@ class ProjectsContainer extends Component {
           ))}
         </ProjectsBox>
         <p>Or Create A New Project</p>
-        <Input
+        <CustomInput
           placeholder="New Project Name"
           value={newProjectName}
           onChange={this.handleChange}
         />
-        <NewProject onClick={this.createProject}>Add new Project</NewProject>
+        <Button onClick={this.createProject}>Add new Project</Button>
         <Error>{error}</Error>
-      </div>
+      </Container>
     );
   };
 }

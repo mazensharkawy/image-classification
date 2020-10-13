@@ -37,5 +37,5 @@
     "trailingComma": "none",
     "arrowParens": "avoid"
   },
-  "proxy": "http://localhost:3001"
+  "proxy": "https://classify.leasing.deals/"
 }
