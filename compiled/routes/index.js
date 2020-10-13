@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.default = exports.IMAGES_BASE = void 0;
 
 var _express = _interopRequireDefault(require("express"));
 
@@ -33,10 +33,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var router = _express.default.Router();
 
-var IMAGES_BASE = "./Images/";
+var dev = process.env.NODE_ENV !== "production";
 
 var ROOT_PATH = _path.default.join(__dirname, "../..");
 
+var IMAGES_BASE = dev ? "./Images/" : "/srv/Images";
+exports.IMAGES_BASE = IMAGES_BASE;
+var CLASSIFIED_IMAGES_BASE = dev ? _path.default.join(ROOT_PATH, "./ClassifiedImages") : "/srv/ClassifiedImages";
 var imagesObject = {};
 
 var moveAsync = (image, newPath) => {
@@ -180,9 +183,9 @@ var classifyImage = /*#__PURE__*/function () {
     } = req.body;
     var imgName = image.split("/").slice(-1).pop();
 
-    var newPath = _path.default.join(ROOT_PATH, "./ClassifiedImages/".concat(project, "/").concat(imageClass, "/").concat(imgName));
+    var newPath = _path.default.join(CLASSIFIED_IMAGES_BASE, "".concat(project, "/").concat(imageClass, "/").concat(imgName));
 
-    var oldImgPath = _path.default.join(ROOT_PATH, "./Images/".concat(image));
+    var oldImgPath = _path.default.join(IMAGES_BASE, "".concat(image));
 
     try {
       moveAsync(oldImgPath, newPath).then( /*#__PURE__*/_asyncToGenerator(function* () {

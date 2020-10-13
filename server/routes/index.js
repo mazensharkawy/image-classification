@@ -6,8 +6,14 @@ import path from "path";
 
 const router = express.Router();
 
-const IMAGES_BASE = "./Images/";
+const dev = process.env.NODE_ENV !== "production";
+
 const ROOT_PATH = path.join(__dirname, "../..");
+export const IMAGES_BASE = dev ? "./Images/" : "/srv/Images";
+const CLASSIFIED_IMAGES_BASE = dev
+  ? path.join(ROOT_PATH, `./ClassifiedImages`)
+  : "/srv/ClassifiedImages";
+
 let imagesObject = {};
 
 const moveAsync = (image, newPath) => {
@@ -19,17 +25,17 @@ const moveAsync = (image, newPath) => {
     });
   });
 };
-const findAndRemove = ( project, value) => {
-  const arr = imagesObject[project]
-    var index = arr.indexOf(value);
-    if (index > -1) {
-      arr.splice(index, 1);
-    }
-    imagesObject = { 
-      ...imagesObject,
-      [project]: arr
-    }
-}
+const findAndRemove = (project, value) => {
+  const arr = imagesObject[project];
+  var index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  imagesObject = {
+    ...imagesObject,
+    [project]: arr
+  };
+};
 const loadJSON = () => {
   try {
     let f = fs.readFileSync("data.json");
@@ -94,15 +100,13 @@ const classifyImage = async (req, res) => {
   const { imageClass, project, image } = req.body;
   let imgName = image.split("/").slice(-1).pop();
   let newPath = path.join(
-    ROOT_PATH,
-    `./ClassifiedImages/${project}/${imageClass}/${imgName}`
+    CLASSIFIED_IMAGES_BASE,
+    `${project}/${imageClass}/${imgName}`
   );
-  const oldImgPath = path.join(ROOT_PATH, `./Images/${image}`);
+  const oldImgPath = path.join(IMAGES_BASE, `${image}`);
   try {
-    moveAsync(oldImgPath, newPath).then(
-      async () => await fetchImage(project)
-    );
-    findAndRemove(project, imgName)
+    moveAsync(oldImgPath, newPath).then(async () => await fetchImage(project));
+    findAndRemove(project, imgName);
     const { img, classes, imagesRemaining } = await fetchImage(project);
     res.send({ img, classes, imagesRemaining });
   } catch (error) {

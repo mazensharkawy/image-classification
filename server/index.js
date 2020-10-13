@@ -1,12 +1,15 @@
 import bodyParser from "body-parser";
 import express from "express";
 import path from "path";
-import routes from "./routes";
+import routes, { IMAGES_BASE } from "./routes";
+
+const dev = process.env.NODE_ENV !== "production";
 
 const port = process.env.PORT || 3001;
 const server = express();
+
 server.use(
-  express.static(path.join(__dirname, "../client/build"), { index: false })
+  express.static(IMAGES_BASE, { index: false })
 );
 server.use(bodyParser.json());
 server.use("/api", routes);
@@ -17,5 +20,5 @@ server.get("/*", function (req, res) {
 });
 server.listen(port, err => {
   if (err) throw err;
-  console.log(`Server listening on ${port}`);
+  console.log(`${process.env.NODE_ENV || "Development"} Server listening on ${port}`);
 });
