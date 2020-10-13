@@ -52,7 +52,7 @@ const Img = styled.div`
 `;
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   min-width: 300px;
 `;
 const Button = styled.button`

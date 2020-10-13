@@ -45,9 +45,10 @@ var JSON_DATA_PATH = _path.default.join(IMAGES_BASE, "data.json");
 
 var imagesObject = {};
 
-var moveAsync = (image, newPath) => {
+var moveAsync = function moveAsync(image, newPath) {
+  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   return new Promise((resolve, reject) => {
-    (0, _mv.default)(image, newPath, err => {
+    (0, _mv.default)(image, newPath, options, err => {
       if (!err) return resolve();
       console.log(err);
       reject();
@@ -191,7 +192,9 @@ var classifyImage = /*#__PURE__*/function () {
     var oldImgPath = _path.default.join(IMAGES_BASE, "".concat(image));
 
     try {
-      moveAsync(oldImgPath, newPath).then( /*#__PURE__*/_asyncToGenerator(function* () {
+      moveAsync(oldImgPath, newPath, {
+        mkdirp: true
+      }).then( /*#__PURE__*/_asyncToGenerator(function* () {
         return yield fetchImage(project);
       }));
       findAndRemove(project, imgName);
@@ -226,9 +229,8 @@ var discardImage = /*#__PURE__*/function () {
     } = req.body;
 
     try {
-      _fs.default.unlink(image, callback);
-
-      yield moveAsync(image, newPath);
+      yield _fs.promises.unlink(image);
+      findAndRemove(project, imgName);
     } catch (error) {
       res.status(500).send();
     }

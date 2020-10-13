@@ -13,13 +13,13 @@ export const IMAGES_BASE = dev ? "./Images/" : "/srv/Images";
 const CLASSIFIED_IMAGES_BASE = dev
   ? path.join(ROOT_PATH, `./ClassifiedImages`)
   : "/srv/ClassifiedImages";
-const JSON_DATA_PATH = path.join(IMAGES_BASE,"data.json")
+const JSON_DATA_PATH = path.join(IMAGES_BASE, "data.json");
 
 let imagesObject = {};
 
-const moveAsync = (image, newPath) => {
+const moveAsync = (image, newPath, options = {}) => {
   return new Promise((resolve, reject) => {
-    mv(image, newPath, err => {
+    mv(image, newPath, options, err => {
       if (!err) return resolve();
       console.log(err);
       reject();
@@ -65,7 +65,9 @@ const requestImage = async (req, res) => {
 
 const loadProjectImages = async projectName => {
   try {
-    let imagesList = await fsPromises.readdir(path.join(IMAGES_BASE, projectName));
+    let imagesList = await fsPromises.readdir(
+      path.join(IMAGES_BASE, projectName)
+    );
     imagesObject = {
       ...imagesObject,
       [projectName]: imagesList
@@ -106,7 +108,9 @@ const classifyImage = async (req, res) => {
   );
   const oldImgPath = path.join(IMAGES_BASE, `${image}`);
   try {
-    moveAsync(oldImgPath, newPath).then(async () => await fetchImage(project));
+    moveAsync(oldImgPath, newPath, { mkdirp: true }).then(
+      async () => await fetchImage(project)
+    );
     findAndRemove(project, imgName);
     const { img, classes, imagesRemaining } = await fetchImage(project);
     res.send({ img, classes, imagesRemaining });
@@ -118,9 +122,8 @@ const classifyImage = async (req, res) => {
 const discardImage = async (req, res) => {
   const { project, image } = req.body;
   try {
-    fs.unlink(image, callback);
-
-    await moveAsync(image, newPath);
+    await fsPromises.unlink(image);
+    findAndRemove(project, imgName);
   } catch (error) {
     res.status(500).send();
   }

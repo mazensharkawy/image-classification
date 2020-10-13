@@ -10,7 +10,6 @@ const server = express();
 console.log({ BUILD_BASE, IMAGES_BASE });
 server.use(express.static(IMAGES_BASE, { index: false }));
 server.use(express.static(BUILD_BASE, { index: false }));
-console.log({});
 server.use(bodyParser.json());
 server.use("/api", routes);
 

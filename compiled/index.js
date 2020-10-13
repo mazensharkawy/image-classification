@@ -28,7 +28,6 @@ server.use(_express.default.static(_routes.IMAGES_BASE, {
 server.use(_express.default.static(BUILD_BASE, {
   index: false
 }));
-console.log({});
 server.use(_bodyParser.default.json());
 server.use("/api", _routes.default);
 server.get("/*", function (req, res) {
