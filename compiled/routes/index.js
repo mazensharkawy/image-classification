@@ -40,6 +40,9 @@ var ROOT_PATH = _path.default.join(__dirname, "../..");
 var IMAGES_BASE = dev ? "./Images/" : "/srv/Images";
 exports.IMAGES_BASE = IMAGES_BASE;
 var CLASSIFIED_IMAGES_BASE = dev ? _path.default.join(ROOT_PATH, "./ClassifiedImages") : "/srv/ClassifiedImages";
+
+var JSON_DATA_PATH = _path.default.join(IMAGES_BASE, "data.json");
+
 var imagesObject = {};
 
 var moveAsync = (image, newPath) => {
@@ -67,7 +70,7 @@ var findAndRemove = (project, value) => {
 
 var loadJSON = () => {
   try {
-    var f = _fs.default.readFileSync("data.json");
+    var f = _fs.default.readFileSync(JSON_DATA_PATH);
 
     return JSON.parse(f);
   } catch (e) {
@@ -153,7 +156,7 @@ var createProject = /*#__PURE__*/function () {
     });
 
     try {
-      yield _fs.promises.writeFile("data.json", JSON.stringify(projects));
+      yield _fs.promises.writeFile(JSON_DATA_PATH, JSON.stringify(projects));
       res.send();
     } catch (err) {
       console.log({

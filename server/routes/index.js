@@ -13,6 +13,7 @@ export const IMAGES_BASE = dev ? "./Images/" : "/srv/Images";
 const CLASSIFIED_IMAGES_BASE = dev
   ? path.join(ROOT_PATH, `./ClassifiedImages`)
   : "/srv/ClassifiedImages";
+const JSON_DATA_PATH = path.join(IMAGES_BASE,"data.json")
 
 let imagesObject = {};
 
@@ -38,7 +39,7 @@ const findAndRemove = (project, value) => {
 };
 const loadJSON = () => {
   try {
-    let f = fs.readFileSync("data.json");
+    let f = fs.readFileSync(JSON_DATA_PATH);
     return JSON.parse(f);
   } catch (e) {
     console.error(e);
@@ -85,7 +86,7 @@ const createProject = async (req, res) => {
     }
   };
   try {
-    await fsPromises.writeFile("data.json", JSON.stringify(projects));
+    await fsPromises.writeFile(JSON_DATA_PATH, JSON.stringify(projects));
     res.send();
   } catch (err) {
     console.log({ err });
