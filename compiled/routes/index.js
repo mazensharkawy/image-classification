@@ -124,7 +124,7 @@ var requestImage = /*#__PURE__*/function () {
 var loadProjectImages = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator(function* (projectName) {
     try {
-      var imagesList = yield _fs.promises.readdir("".concat(IMAGES_BASE).concat(projectName));
+      var imagesList = yield _fs.promises.readdir(_path.default.join(IMAGES_BASE, projectName));
       imagesObject = _objectSpread(_objectSpread({}, imagesObject), {}, {
         [projectName]: imagesList
       });

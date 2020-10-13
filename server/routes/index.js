@@ -64,7 +64,7 @@ const requestImage = async (req, res) => {
 
 const loadProjectImages = async projectName => {
   try {
-    let imagesList = await fsPromises.readdir(`${IMAGES_BASE}${projectName}`);
+    let imagesList = await fsPromises.readdir(path.join(IMAGES_BASE, projectName));
     imagesObject = {
       ...imagesObject,
       [projectName]: imagesList
