@@ -43,7 +43,9 @@ var CLASSIFIED_IMAGES_BASE = dev ? _path.default.join(ROOT_PATH, "./ClassifiedIm
 
 var JSON_DATA_PATH = _path.default.join(IMAGES_BASE, "data.json");
 
+var TIME_OFFSET_MS = 180000;
 var imagesObject = {};
+var timeObject = {};
 
 var moveAsync = function moveAsync(image, newPath) {
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
@@ -87,12 +89,22 @@ var fetchImage = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator(function* (projectName) {
     var imagesList = imagesObject[projectName];
     if (!imagesList) imagesList = yield loadProjectImages(projectName);
+    var i = -1,
+        classes,
+        imgName,
+        img;
 
-    var classes = _lodash.default.get(projects, "".concat(projectName, ".classes"));
+    do {
+      i++;
+      classes = _lodash.default.get(projects, "".concat(projectName, ".classes"));
 
-    var formattedProjectName = _lodash.default.replace(projectName, " ", "\\ ");
+      var formattedProjectName = _lodash.default.replace(projectName, " ", "\\ ");
 
-    var img = "/".concat(formattedProjectName, "/").concat(imagesList[imagesList.length - 1]);
+      imgName = imagesList[imagesList.length - i];
+      img = "/".concat(formattedProjectName, "/").concat(imgName);
+    } while (timeObject[imgName] && timeObject[imgName] > Date.now() - TIME_OFFSET_MS);
+
+    timeObject[imgName] = Date.now();
     return {
       img,
       classes,

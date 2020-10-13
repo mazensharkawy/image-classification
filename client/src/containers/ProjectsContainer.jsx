@@ -26,6 +26,7 @@ const Project = styled.a`
   border-bottom: 1px solid #ececec;
   text-align: center;
   width: 100%;
+  cursor: pointer;
 `;
 const Button = styled.button`
   color: white;

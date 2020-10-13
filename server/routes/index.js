@@ -15,7 +15,9 @@ const CLASSIFIED_IMAGES_BASE = dev
   : "/srv/ClassifiedImages";
 const JSON_DATA_PATH = path.join(IMAGES_BASE, "data.json");
 
+const TIME_OFFSET_MS = 180000;
 let imagesObject = {};
+let timeObject = {};
 
 const moveAsync = (image, newPath, options = {}) => {
   return new Promise((resolve, reject) => {
@@ -52,9 +54,23 @@ let projects = loadJSON();
 const fetchImage = async projectName => {
   let imagesList = imagesObject[projectName];
   if (!imagesList) imagesList = await loadProjectImages(projectName);
-  let classes = _.get(projects, `${projectName}.classes`);
-  let formattedProjectName = _.replace(projectName, " ", "\\ ");
-  let img = `/${formattedProjectName}/${imagesList[imagesList.length - 1]}`;
+
+  let i = -1,
+    classes,
+    imgName,
+    img;
+  do {
+    i++;
+    classes = _.get(projects, `${projectName}.classes`);
+    let formattedProjectName = _.replace(projectName, " ", "\\ ");
+    imgName = imagesList[imagesList.length - i];
+    img = `/${formattedProjectName}/${imgName}`;
+  } while (
+    timeObject[imgName] &&
+    timeObject[imgName] > Date.now() - TIME_OFFSET_MS
+  );
+  timeObject[imgName] = Date.now();
+
   return { img, classes, imagesRemaining: imagesList.length };
 };
 const requestImage = async (req, res) => {
