@@ -122,8 +122,8 @@ class ClassifyingPage extends Component {
               ))}
             </div>
             <ButtonContainer>
-              <Button onClick={this.classify}>Submit</Button>
               <Button onClick={this.discard}>Discard Image</Button>
+              <Button onClick={this.classify}>Submit</Button>
             </ButtonContainer>
           </OptionsContainer>
         </Controls>
