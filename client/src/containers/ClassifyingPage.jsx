@@ -20,8 +20,7 @@ const Button = styled.button`
 class ClassifyingPage extends Component {
   state = {};
   componentDidMount = () => {
-    let projectName = "project1";
-    Server.requestNewImage(projectName).then(this.loadNewImage);
+    Server.requestNewImage(this.props.selectedProject).then(this.loadNewImage);
   };
   loadNewImage = res => {
     console.log({res})
